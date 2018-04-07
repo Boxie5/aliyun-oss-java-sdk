@@ -138,15 +138,9 @@ import com.aliyun.oss.model.SetBucketWebsiteRequest;
 import com.aliyun.oss.model.TagSet;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.UserQos;
-import com.qiniu.http.Response;
 
 import org.apache.http.*;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import com.aliyun.oss.common.utils.LogUtils;
-import com.aliyun.oss.internal.OSSUtils;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.storage.model.FileListing;
@@ -428,7 +422,7 @@ public class OSSBucketOperation extends OSSOperation {
                                 credsProvider.getCredentials().getSecretAccessKey());
         BucketManager mgr = new BucketManager(auth, new Configuration());
 
-        LogUtils.getLog().warn("==== listObject headers:" + listObjectsRequest.getHeaders() 
+        LogUtils.getLog().debug("==== listObject headers:" + listObjectsRequest.getHeaders() 
                 + " params:" + listObjectsRequest.getParameters() + " encode:" + listObjectsRequest.getEncodingType()
                 + " bucket:" + listObjectsRequest.getBucketName() + " key:" + listObjectsRequest.getKey()
                 + " prefix:" + listObjectsRequest.getPrefix() + " marker:" + listObjectsRequest.getMarker()
@@ -452,7 +446,7 @@ public class OSSBucketOperation extends OSSOperation {
                 if (ls == null) break;
                 //if (ls.items == null) ls.items = new FileInfo[0];
 
-                LogUtils.getLog().warn("==== listObject get " + ls.items.length + " of " + limit
+                LogUtils.getLog().debug("==== listObject get " + ls.items.length + " of " + limit
                         + " prefix:" + prefix + " marker:" + ls.marker + " EOF:" + ls.isEOF()
                         + " delimiter:" + delimiter
                         + " prefixes:" + ((ls.commonPrefixes != null) ? Arrays.toString(ls.commonPrefixes) : ""));
@@ -483,10 +477,9 @@ public class OSSBucketOperation extends OSSOperation {
             result.setEncodingType(Objects.toString(listObjectsRequest.getEncodingType(), ""));
             result.setMarker(marker);
             result.setTruncated(truncated);
-            LogUtils.getLog().warn("==== listObject count:" + result.getObjectSummaries().size());
+            LogUtils.getLog().debug("==== listObject count:" + result.getObjectSummaries().size());
             return result;
         } catch (Exception e) {
-            //LogUtils.getLog().warn("==== listObject exception: " + e.toString());
             //throw new OSSException(e.toString());
             return new ObjectListing();
         }
